@@ -2,7 +2,7 @@ from shiny import ui, reactive, render
 
 from dp_creator_ii.utils.argparse_helpers import get_csv_contrib
 from dp_creator_ii.app.components.outputs import output_code_sample
-from dp_creator_ii.utils.template import make_privacy_unit_block
+from dp_creator_ii.utils.templates import make_privacy_unit_block
 
 
 def dataset_ui():
@@ -16,7 +16,7 @@ def dataset_ui():
             'This is the "unit of privacy" which will be protected.'
         ),
         ui.input_numeric("contributions", "Contributions", contributions),
-        output_code_sample("unit_of_privacy_python"),
+        output_code_sample("Unit of Privacy", "unit_of_privacy_python"),
         ui.input_action_button("go_to_analysis", "Define analysis"),
         value="dataset_panel",
     )

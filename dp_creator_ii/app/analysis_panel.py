@@ -2,12 +2,12 @@ from math import pow
 
 from shiny import ui, reactive, render
 
-from dp_creator_ii.utils.mock_data import mock_data, ColumnDef
-from dp_creator_ii.app.components.plots import plot_error_bars_with_cutoff
 from dp_creator_ii.app.components.inputs import log_slider
 from dp_creator_ii.app.components.column_module import column_ui, column_server
 from dp_creator_ii.utils.csv_helper import read_field_names
 from dp_creator_ii.utils.argparse_helpers import get_csv_contrib
+from dp_creator_ii.app.components.outputs import output_code_sample
+from dp_creator_ii.utils.templates import make_privacy_loss_block
 
 
 def analysis_ui():
@@ -28,13 +28,7 @@ def analysis_ui():
         ),
         log_slider("log_epsilon_slider", 0.1, 10.0),
         ui.output_text("epsilon"),
-        ui.markdown(
-            "## Preview\n"
-            "These plots assume a normal distribution for the columns you've selected, "
-            "and demonstrate the effect of different parameter choices."
-        ),
-        ui.output_plot("plot_preview"),
-        "(This plot is only to demonstrate that plotting works.)",
+        output_code_sample("Privacy Loss", "privacy_loss_python"),
         ui.input_action_button("go_to_results", "Download results"),
         value="analysis_panel",
     )
@@ -95,18 +89,9 @@ def analysis_server(input, output, session):  # pragma: no cover
     def epsilon():
         return f"Epsilon: {epsilon_calc():0.3}"
 
-    @render.plot()
-    def plot_preview():
-        min_x = 0
-        max_x = 100
-        df = mock_data({"col_0_100": ColumnDef(min_x, max_x)}, row_count=20)
-        return plot_error_bars_with_cutoff(
-            df["col_0_100"].to_list(),
-            x_min_label=min_x,
-            x_max_label=max_x,
-            y_cutoff=30,
-            y_error=5,
-        )
+    @render.code
+    def privacy_loss_python():
+        return make_privacy_loss_block(epsilon_calc())
 
     @reactive.effect
     @reactive.event(input.go_to_results)
