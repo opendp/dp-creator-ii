@@ -1,3 +1,6 @@
+# Install the following dependencies, if you haven't already:
+# pip install DEPENDENCIES
+
 from argparse import ArgumentParser
 
 IMPORTS_BLOCK
